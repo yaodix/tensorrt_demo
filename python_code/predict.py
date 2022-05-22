@@ -1,7 +1,7 @@
 import cv2
 import torch
 from albumentations import Resize, Compose
-from albumentations.pytorch.transforms import  ToTensor
+from albumentations.pytorch.transforms import  ToTensorV2
 from albumentations.augmentations.transforms import Normalize
 from torchvision import models
 
@@ -10,7 +10,7 @@ def preprocess_image(img_path):
     transforms = Compose([
         Resize(224, 224, interpolation=cv2.INTER_NEAREST),
         Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-        ToTensor(),
+        ToTensorV2(),
     ])
     
     # read input image
@@ -45,8 +45,8 @@ def postprocess(output_data):
         i += 1
 
 
-model = models.resnet50(torch.load("resnet50-19c8e357.pth"))
-input = preprocess_image("turkish_coffee.jpg").cuda()
+model = models.resnet50(torch.load("/home/yao/workspace/tensorrt_demo/python_code/resnet50-19c8e357.pth"))
+input = preprocess_image("/home/yao/workspace/tensorrt_demo/python_code/Selection_002.jpg").cuda()
 model.eval()
 model.cuda()
 output = model(input)

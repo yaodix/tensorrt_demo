@@ -122,7 +122,7 @@ int PostProcess(std::vector<float>& cpu_output) {
     std::sort(indices.begin(), indices.end(), [&cpu_output](int i1, int i2) {return cpu_output[i1] > cpu_output[i2];});
     // print results
     int i = 0;
-    while (cpu_output[indices[i]] / sum > 0.05)
+    while (cpu_output[indices[i]] / sum > 0.005)
     {
         if (classes.size() > indices[i])
         {
@@ -218,15 +218,14 @@ int main(int argc, char **argv)
         for (int b = 0; b < fcount; b++) {
             cv::Mat img = cv::imread(img_dir + "/" + file_names[f - fcount + 1 + b]);
             if (img.empty()) continue;
-            cv::Mat pr_img = preprocess_img(img, INPUT_W, INPUT_H); // letterbox BGR to RGB
+            cv::Mat pr_img = preprocess_img2(img, INPUT_W, INPUT_H); // letterbox BGR to RGB
             int i = 0;
             for (int row = 0; row < INPUT_H; ++row) {
-                uchar* uc_pixel = pr_img.data + row * pr_img.step;
+                // uchar* uc_pixel = pr_img.data + row * pr_img.step;
                 for (int col = 0; col < INPUT_W; ++col) {
-                    data[b * 3 * INPUT_H * INPUT_W + i] = (float)uc_pixel[2] / 255.0;
-                    data[b * 3 * INPUT_H * INPUT_W + i + INPUT_H * INPUT_W] = (float)uc_pixel[1] / 255.0;
-                    data[b * 3 * INPUT_H * INPUT_W + i + 2 * INPUT_H * INPUT_W] = (float)uc_pixel[0] / 255.0;
-                    uc_pixel += 3;
+                    data[b * 3 * INPUT_H * INPUT_W + i] = pr_img.at<cv::Vec3f>(row,col)[0];
+                    data[b * 3 * INPUT_H * INPUT_W + i + INPUT_H * INPUT_W] =  pr_img.at<cv::Vec3f>(row,col)[1] ;
+                    data[b * 3 * INPUT_H * INPUT_W + i + 2 * INPUT_H * INPUT_W] =  pr_img.at<cv::Vec3f>(row,col)[2] ;
                     ++i;
                 }
             }

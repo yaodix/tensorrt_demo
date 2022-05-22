@@ -43,6 +43,19 @@ static inline cv::Mat preprocess_img(cv::Mat& img, int input_w, int input_h) {
     return out;
 }
 
+
+static inline cv::Mat preprocess_img2(cv::Mat& img, int input_w, int input_h) {
+    auto input_size = cv::Size(input_w, input_h);
+    cv::Mat resized;
+    cv::resize(img, resized, input_size, 0, 0,cv::INTER_NEAREST);
+    cv::Mat flt_image;
+    resized.convertTo(flt_image, CV_32FC3, 1.f / 255.f);
+    cv::subtract(flt_image, cv::Scalar(0.485f, 0.456f, 0.406f), flt_image, cv::noArray(), -1);
+    cv::divide(flt_image, cv::Scalar(0.229f, 0.224f, 0.225f), flt_image, 1, -1);
+
+    return flt_image;
+}
+
 static inline int read_files_in_dir(const char *p_dir_name, std::vector<std::string> &file_names) {
     DIR *p_dir = opendir(p_dir_name);
     if (p_dir == nullptr) {
