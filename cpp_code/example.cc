@@ -110,7 +110,7 @@ void launchInference(nvinfer1::IExecutionContext *context, cudaStream_t stream, 
 
 
 int PostProcess(std::vector<float>& cpu_output) {
-    auto classes = getClassNames("/home/yao/workspace/tensorrt_demo/imagenet_classes.txt");
+    auto classes = getClassNames("../data/imagenet_classes.txt");
 
         // calculate softmax
     std::transform(cpu_output.begin(), cpu_output.end(), cpu_output.begin(), [](float val) {return std::exp(val);});
@@ -147,7 +147,7 @@ int main(int argc, char **argv)
     // onnx解析成engine
     // In order to create an object of type IExecutionContext, first create an object of type ICudaEngine (the engine).
     int batchSize = 4;
-    unique_ptr<ICudaEngine, Destroy<ICudaEngine>> engine(createCudaEngine("/home/yao/workspace/tensorrt_demo/resnet50_pytorch_bs4.onnx", logger_t, batchSize)); 
+    unique_ptr<ICudaEngine, Destroy<ICudaEngine>> engine(createCudaEngine("../data/resnet50_pytorch_bs4.onnx", logger_t, batchSize)); 
 
     /* 从二进制文件trt中取模型流并生成engine 
     ifstream file("resnet_engine.trt", ios::binary);
